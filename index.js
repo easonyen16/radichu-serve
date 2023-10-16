@@ -66,6 +66,7 @@ const proxyToRadikoAPI = async (req, res) => {
     return res.json(response.data);
   } catch (error) {
     logger.error(`Error while proxying to Radiko API: ${error.message}`);
+    console.log(`Proxying to URL: ${url}`);
     return res.status(500).send('Error while fetching data from Radiko.');
   }
 };
