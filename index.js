@@ -55,10 +55,15 @@ const servePlaylist = async (req, res) => {
 };
 
 const proxyToRadikoAPI = async (req, res) => {
-  const options = { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' };
-  const formatter = new Intl.DateTimeFormat('ja-JP', options);
-  const targetDate = formatter.format(new Date()).replace(/\//g, ''); // 使用斜線替換，因為在這裡我們預期的是斜線
+  const now = new Date();
+  const tokyoDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+  
+  // 如果是午夜到早上5點，調整日期到前一天
+  if (tokyoDate.getHours() < 5) {
+    tokyoDate.setDate(tokyoDate.getDate() - 1);
+  }
 
+  const targetDate = `${tokyoDate.getFullYear()}${(tokyoDate.getMonth() + 1).toString().padStart(2, '0')}${tokyoDate.getDate().toString().padStart(2, '0')}`;
   const url = `https://radiko.jp/v4/program/station/date/${targetDate}/QRR.json`;
 
   try {
