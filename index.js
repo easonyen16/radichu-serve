@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const bunyan = require('bunyan');
 const radichuCore = require('radichu-core');
 const config = require('./config');
@@ -8,6 +9,7 @@ const logger = bunyan.createLogger({ name: 'radichu-serve' });
 radichuCore.configure(config.radichuCore);
 
 const app = express();
+app.use(cors());
 app.disable('x-powered-by');
 
 app.get('/', (req, res) => res.send('Hello World!'));

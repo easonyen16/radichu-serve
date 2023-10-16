@@ -8,9 +8,10 @@
   },
   "dependencies": {
     "bunyan": "^1.8.12",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "ffmpeg-static": "^4.1.1",
+    "ffmpeg-static": "^5.2.0",
     "fluent-ffmpeg": "^2.1.2",
     "radichu-core": "shouko/radichu-core#v0.4.0"
   },
