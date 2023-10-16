@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bunyan = require('bunyan');
+const axios = require('axios');
 const radichuCore = require('radichu-core');
 const config = require('./config');
 
@@ -52,6 +53,24 @@ const servePlaylist = async (req, res) => {
     return res.send(e.message);
   }
 };
+
+const proxyToRadikoAPI = async (req, res) => {
+  const options = { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('ja-JP', options);
+  const targetDate = formatter.format(new Date()).replace(/-/g, '');
+
+  const url = `https://radiko.jp/v4/program/station/date/${targetDate}/QRR.json`;
+
+  try {
+    const response = await axios.get(url);
+    return res.json(response.data);
+  } catch (error) {
+    logger.error(`Error while proxying to Radiko API: ${error.message}`);
+    return res.status(500).send('Error while fetching data from Radiko.');
+  }
+};
+
+app.get('/radiko-proxy', proxyToRadikoAPI);
 
 app.get('/play/:stationId/:ft/:to/playlist.m3u8', authBasic, servePlaylist);
 app.get('/live/:stationId/playlist.m3u8', authBasic, servePlaylist);
