@@ -57,7 +57,7 @@ const servePlaylist = async (req, res) => {
 const proxyToRadikoAPI = async (req, res) => {
   const options = { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' };
   const formatter = new Intl.DateTimeFormat('ja-JP', options);
-  const targetDate = formatter.format(new Date()).replace(/-/g, '');
+  const targetDate = formatter.format(new Date()).replace(/\//g, ''); // 使用斜線替換，因為在這裡我們預期的是斜線
 
   const url = `https://radiko.jp/v4/program/station/date/${targetDate}/QRR.json`;
 
