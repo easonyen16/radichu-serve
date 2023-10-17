@@ -57,14 +57,16 @@ const servePlaylist = async (req, res) => {
 const proxyToRadikoAPI = async (req, res) => {
   const now = new Date();
   const tokyoDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-  
+
   // 如果是午夜到早上5點，調整日期到前一天
   if (tokyoDate.getHours() < 5) {
     tokyoDate.setDate(tokyoDate.getDate() - 1);
   }
 
   const targetDate = `${tokyoDate.getFullYear()}${(tokyoDate.getMonth() + 1).toString().padStart(2, '0')}${tokyoDate.getDate().toString().padStart(2, '0')}`;
-  const url = `https://radiko.jp/v4/program/station/date/${targetDate}/QRR.json`;
+
+  const channel = req.query.channel || 'QRR';  // 預設頻道為QRR，若客戶端未指定頻道
+  const url = `https://radiko.jp/v4/program/station/date/${targetDate}/${channel}.json`;
 
   try {
     const response = await axios.get(url);
