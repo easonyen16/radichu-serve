@@ -66,11 +66,11 @@ const proxyToRadikoAPI = async (req, res) => {
   } else {
     const now = new Date();
     tokyoDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-  }
 
-  // 如果是午夜到早上5點，調整日期到前一天
-  if (tokyoDate.getHours() < 5) {
-    tokyoDate.setDate(tokyoDate.getDate() - 1);
+    // 如果是午夜到早上5點，調整日期到前一天
+    if (tokyoDate.getHours() < 5) {
+      tokyoDate.setDate(tokyoDate.getDate() - 1);
+    }
   }
 
   const targetDate = `${tokyoDate.getFullYear()}${(tokyoDate.getMonth() + 1).toString().padStart(2, '0')}${tokyoDate.getDate().toString().padStart(2, '0')}`;
