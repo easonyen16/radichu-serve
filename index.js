@@ -55,8 +55,18 @@ const servePlaylist = async (req, res) => {
 };
 
 const proxyToRadikoAPI = async (req, res) => {
-  const now = new Date();
-  const tokyoDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+  let tokyoDate;
+
+  if (req.query.date && /^[0-9]{8}$/.test(req.query.date)) { // 驗證日期格式是否正確
+    const year = parseInt(req.query.date.substring(0, 4), 10);
+    const month = parseInt(req.query.date.substring(4, 6), 10) - 1; // 月份從0開始
+    const day = parseInt(req.query.date.substring(6, 8), 10);
+
+    tokyoDate = new Date(year, month, day);
+  } else {
+    const now = new Date();
+    tokyoDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+  }
 
   // 如果是午夜到早上5點，調整日期到前一天
   if (tokyoDate.getHours() < 5) {
@@ -78,7 +88,7 @@ const proxyToRadikoAPI = async (req, res) => {
   }
 };
 
-app.get('/radiko-proxy', proxyToRadikoAPI);
+app.get('/schedule', proxyToRadikoAPI);
 
 app.get('/play/:stationId/:ft/:to/playlist.m3u8', authBasic, servePlaylist);
 app.get('/live/:stationId/playlist.m3u8', authBasic, servePlaylist);
